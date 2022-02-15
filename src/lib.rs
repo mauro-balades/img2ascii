@@ -53,4 +53,21 @@
 //        average of those 3 numbers (ignoring Alpha)
 //        and get the character index depending on the
 //        average.
+
+extern crate image;
+use image::imageops::FilterType;
+
    
+pub fn img2ascii(DynamicImage img) -> String {
+  // TODO: options struct
+  // Options (default)
+  let resolution = 5;
+
+  // Create a new instance of a string.
+  // Here is where the ascii art will
+  // be stored as a result.
+  let ascii_art = String::new()
+
+
+  let sm = img.resize(img.width() / resolution, img.height() / resolution, FilterType::Nearest);
+}
