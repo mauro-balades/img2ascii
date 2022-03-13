@@ -60,10 +60,8 @@ use image::GenericImageView;
 use image::imageops::FilterType;
 
 
-pub fn img2ascii(img: DynamicImage) -> String {
-  // TODO: options struct
-  // Options (default)
-  let resolution = 5;
+pub fn img2ascii(img: DynamicImage, res: Option<u32>) -> String {
+  let resolution: u32 = res.unwrap_or(5);
 
   // Create a new instance of a string.
   // Here is where the ascii art will
