@@ -82,7 +82,7 @@ pub fn img2ascii(img: DynamicImage, res: Option<u32>) -> String {
     }
 
     let pixel_data = pixel.2;
-    let brightness:f64 = ((pixel_data[0] as u64 + pixel_data[1] as u64 + pixel_data[2] as u64) / 3) as f64;
+    let brightness: f64 = ((pixel_data[0] as u64 + pixel_data[1] as u64 + pixel_data[2] as u64) / 3) as f64;
 
     let character_position = ((brightness/255.0) * (character_set.len()  - 1) as f64 ).round() as usize;
     ascii_art.push_str(character_set[character_position]);
@@ -103,7 +103,7 @@ mod tests {
     #[test]
     fn transparent_dog() -> Result<(), std::io::Error> {
         let img = image::open("./test/transparent_dog.jpg").unwrap();
-        let ascii_art= img2ascii(img);
+        let ascii_art= img2ascii(img, Some(30));
 
         let mut file = File::create("./test/transparent_dog.txt")?;
         file.write_all(ascii_art.as_bytes())?;
