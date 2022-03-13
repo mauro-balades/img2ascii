@@ -55,10 +55,12 @@
 //        average.
 
 extern crate image;
+use image::DynamicImage;
+use image::GenericImageView;
 use image::imageops::FilterType;
 
-   
-pub fn img2ascii(DynamicImage img) -> String {
+
+pub fn img2ascii(img: DynamicImage) -> () {
   // TODO: options struct
   // Options (default)
   let resolution = 5;
@@ -66,8 +68,36 @@ pub fn img2ascii(DynamicImage img) -> String {
   // Create a new instance of a string.
   // Here is where the ascii art will
   // be stored as a result.
-  let ascii_art = String::new()
+  let mut last_y = 0;
+  let mut ascii_art = String::new();
 
-
+  // Resize the image to a smaller version of it.
   let sm = img.resize(img.width() / resolution, img.height() / resolution, FilterType::Nearest);
+
+  // Iterate for every pixel on the resized
+  // image.
+  for pixel in sm.pixels() {
+    if last_y != pixel.1 {
+      ascii_art.push_str("\n");
+      last_y = pixel.1;
+    }
+
+    let pixel_data = pixel.2;
+    let brightness:f64 = ((pixel_data[0] as u64 + pixel_data[1] as u64 + pixel_data[2] as u64) / 3) as f64;
+  }
+}
+
+// - TESTS -
+
+#[cfg(test)]
+mod tests {
+    // Note this useful idiom: importing names from outer (for mod tests) scope.
+    use super::*;
+
+    #[test]
+    fn transparent_dog() {
+        let img = image::open("./test/transparent_dog.jpg").unwrap();
+        img2ascii(img);
+        assert_eq!(3, 3);
+    }
 }
