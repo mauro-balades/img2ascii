@@ -60,7 +60,7 @@ use image::GenericImageView;
 use image::imageops::FilterType;
 
 
-pub fn img2ascii(img: DynamicImage) -> () {
+pub fn img2ascii(img: DynamicImage) -> String {
   // TODO: options struct
   // Options (default)
   let resolution = 5;
@@ -70,6 +70,7 @@ pub fn img2ascii(img: DynamicImage) -> () {
   // be stored as a result.
   let mut last_y = 0;
   let mut ascii_art = String::new();
+  let character_set: [&str; 11] = ["@", "#", "0", "O", "L", ";", ":", ".", ",", "'", " "];
 
   // Resize the image to a smaller version of it.
   let sm = img.resize(img.width() / resolution, img.height() / resolution, FilterType::Nearest);
@@ -84,20 +85,32 @@ pub fn img2ascii(img: DynamicImage) -> () {
 
     let pixel_data = pixel.2;
     let brightness:f64 = ((pixel_data[0] as u64 + pixel_data[1] as u64 + pixel_data[2] as u64) / 3) as f64;
+
+    let character_position = ((brightness/255.0) * (character_set.len()  - 1) as f64 ).round() as usize;
+    ascii_art.push_str(character_set[character_position]);
   }
+
+  return ascii_art
 }
 
 // - TESTS -
 
 #[cfg(test)]
 mod tests {
+    use std::{fs::File, io::{Write}};
+
     // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
 
     #[test]
-    fn transparent_dog() {
+    fn transparent_dog() -> Result<(), std::io::Error> {
         let img = image::open("./test/transparent_dog.jpg").unwrap();
-        img2ascii(img);
+        let ascii_art= img2ascii(img);
+
+        let mut file = File::create("./test/transparent_dog.txt")?;
+        file.write_all(ascii_art.as_bytes())?;
+
         assert_eq!(3, 3);
+        return Ok(());
     }
 }
